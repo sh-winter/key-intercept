@@ -1,33 +1,50 @@
-const dll = Deno.dlopen("user32.dll", {
-  MessageBoxW: {
-    parameters: ["pointer", "pointer", "pointer", "u64"],
-    result: "i32",
-  },
-  CreateWindowExW: {
-    parameters: [
-      "u64",
-      "pointer",
-      "pointer",
-      "u64",
-      "i32",
-      "i32",
-      "i32",
-      "i32",
-      "pointer",
-      "pointer",
-      "pointer",
-      "pointer",
-    ],
-    result: "pointer",
+import { 
+  INT,
+  UINT,
+  DWORD,
+  BOOL,
+  HHOOK,
+  HWND,
+  HINSTANCE,
+  WPARAM,
+  LPARAM,
+  LRESULT,
+  HOOKPROC,
+  MSG,
+  LPCWSTR
+ } from '../types.ts'
+
+export const dll = Deno.dlopen("user32.dll", {
+  FindWindowExW: {
+    parameters: [HWND, HWND, LPCWSTR, LPCWSTR] as const,
+    result: HWND
   },
   SetWindowsHookExW: {
-    parameters: ["i32", "function", "pointer", "u64"],
-    result: "pointer"
+    parameters: [INT, HOOKPROC, HINSTANCE, DWORD] as const,
+    result: HHOOK
+  },
+  UnhookWindowsHookEx: {
+    parameters: [HHOOK] as const,
+    result: BOOL
+  },
+  CallNextHookEx: {
+    parameters: [HHOOK, INT, WPARAM, LPARAM] as const,
+    result: LRESULT
+  },
+  GetMessageW: {
+    parameters: [MSG, HWND, UINT, UINT] as const,
+    result: BOOL
+  },
+  TranslateMessage: {
+    parameters: [MSG] as const,
+    result: BOOL
+  },
+  DispatchMessageW: {
+    parameters: [MSG] as const,
+    result: LRESULT
   }
 });
 
-function close() {
+export function close() {
   dll.close();
 }
-
-export { close, dll };

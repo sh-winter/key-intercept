@@ -1,30 +1,39 @@
-import * as win32 from "./mod.ts";
+import {
+  FindWindowExW,
+  SetWindowsHookExW,
+  UnhookWindowsHookEx,
+  GetMessageW,
+  CallNextHookEx,
+  TranslateMessage,
+  DispatchMessageW,
+  WH_KEYBOARD_LL,
+  VK_LWIN
+} from "./mod.ts";
 
-const callback = new Deno.UnsafeCallback(
-  {
-    parameters: ["i32", "i32", "i32"],
-    result: "i64",
-  } as const,
-  (
-    nCode: number,
-    wParam: number,
-    lParam: number,
-  ) => {
-    if (nCode) {
-      console.log('nCode: ', nCode);
-      if (wParam === win32.VK_LWIN) {
-        return 1;
-      }
+function MouseHookCallback(nCode: number, wParam: bigint, lParam: bigint): bigint {
+  const vkCode = new Deno.UnsafePointerView(lParam).getInt16();
+
+  if (nCode >= 0) {
+    if (vkCode === VK_LWIN) {
+      console.time('find window');
+      const hwnd = FindWindowExW(null, null, null, 'League of Legends (TM) Client');
+      if (hwnd !== 0n) 
+      console.timeEnd('find window');
+      console.log('vkCode: ', vkCode);
+      return 1n;
     }
-    return 1;
-  },
-);
+  }
+  return CallNextHookEx(nCode, wParam, lParam);
+}
 
-win32.SetWindowsHookExW(
-  win32.WH_KEYBOARD_LL,
-  callback,
-  0n,
-  0
-);
+let hHook = SetWindowsHookExW(WH_KEYBOARD_LL, MouseHookCallback, null, 0);
 
-await new Promise(res => setTimeout(res, 5000))
+globalThis.addEventListener('unload', () => {
+  UnhookWindowsHookEx(hHook)
+})
+
+let msg = new Uint8Array(48);
+while (GetMessageW(msg, null, 0, 0)) {
+  TranslateMessage(msg)
+  DispatchMessageW(msg)
+}
