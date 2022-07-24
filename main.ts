@@ -1,14 +1,14 @@
 import { cache, exists } from 'https://deno.land/x/cache@0.2.13/mod.ts'
 import { dirname } from "https://deno.land/std@0.149.0/path/mod.ts";
 
-const EXE_FILE_URL = "./keyboardHook.exe";
+const exeFileURL = import.meta.resolve("./keyboardHook.exe");
 
 export async function start(config?: string[]) {
   if (config) localStorage.setItem('config', JSON.stringify(config))
   const args = JSON.parse(localStorage.getItem('config') ?? '[]')
 
-  const existFlag = await exists(EXE_FILE_URL);
-  const { path } = await cache(EXE_FILE_URL);
+  const existFlag = await exists(exeFileURL);
+  const { path } = await cache(exeFileURL);
 
   const command = `Add "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers" /v "${path}" /d "WINXPSP3"`
 
