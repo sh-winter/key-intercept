@@ -7,10 +7,9 @@
 HHOOK hHook;
 
 int main(int argc, char *argv[]) {
-
   if (argc <= 1) return 1;
 
-  LRESULT CALLBACK MouseHookCallback(int nCode, WPARAM wParam, LPARAM lParam) {
+  LRESULT CALLBACK KeyboardHookCallback(int nCode, WPARAM wParam, LPARAM lParam) {
     KBDLLHOOKSTRUCT *pkh = (KBDLLHOOKSTRUCT *)lParam;
     if (nCode >= 0) {
       if (pkh->vkCode == VK_LWIN) {
@@ -21,6 +20,8 @@ int main(int argc, char *argv[]) {
         GetWindowTextW(hwnd, lpString, len + 1);
         char str[len];
         wcstombs(str, lpString, len + 1);
+
+        printf("str: %s", str);
 
         bool flag = false;
         int i;
@@ -42,7 +43,7 @@ int main(int argc, char *argv[]) {
     return CallNextHookEx(hHook, nCode, wParam, lParam);
   }
 
-  hHook = SetWindowsHookExW(WH_KEYBOARD_LL, MouseHookCallback, 0, 0);
+  hHook = SetWindowsHookExW(WH_KEYBOARD_LL, KeyboardHookCallback, 0, 0);
 
   MSG msg;
   while (GetMessageW(&msg, 0, 0, 0)) {

@@ -1,11 +1,23 @@
-import { cache } from 'https://deno.land/x/cache@0.2.13/mod.ts'
+import { cache, exists } from 'https://deno.land/x/cache@0.2.13/mod.ts'
 import { dirname } from "https://deno.land/std@0.149.0/path/mod.ts";
+
+const EXE_FILE_URL = "./keyboardHook.exe";
 
 export async function start(config?: string[]) {
   if (config) localStorage.setItem('config', JSON.stringify(config))
   const args = JSON.parse(localStorage.getItem('config') ?? '[]')
 
-  const { path } = await cache("./keyboardHook.exe")
+  const existFlag = await exists(EXE_FILE_URL);
+  const { path } = await cache(EXE_FILE_URL);
+
+  const command = `Add "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers" /v "${path}" /d "WINXPSP3"`
+
+  if (!existFlag) {
+    Deno.spawnSync("reg.exe", {
+      args: [command],
+      stdout: 'inherit'
+    })
+  }
 
   const controller = new AbortController()
   Deno.spawnChild(path, {
