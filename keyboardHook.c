@@ -20,13 +20,13 @@ int main(int argc, char *argv[]) {
 
         TCHAR lpString[len];
 
-        SendMessage(hwnd, WM_GETTEXT, len, (LPARAM)lpString);
+        SendMessage(hwnd, WM_GETTEXT, len + 1, (LPARAM)lpString);
 
         bool flag = false;
         int i;
         for (i = 1; i < argc; i++) {
           if (hwnd != NULL) {
-            if (!memcmp(lpString, argv[i], len)) {
+            if (!strcmp(lpString, argv[i])) {
               flag = true;
               break;
             }
