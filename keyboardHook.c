@@ -13,21 +13,20 @@ int main(int argc, char *argv[]) {
     KBDLLHOOKSTRUCT *pkh = (KBDLLHOOKSTRUCT *)lParam;
     if (nCode >= 0) {
       if (pkh->vkCode == VK_LWIN) {
+
         HWND hwnd = GetForegroundWindow();
-        int len = GetWindowTextLengthA(hwnd);
 
-        wchar_t lpString[len];
-        GetWindowTextW(hwnd, lpString, len + 1);
-        char str[len];
-        wcstombs(str, lpString, len + 1);
+        int len = SendMessage(hwnd, WM_GETTEXTLENGTH, 0, 0);
 
-        printf("str: %s", str);
+        TCHAR lpString[len];
+
+        SendMessage(hwnd, WM_GETTEXT, len, (LPARAM)lpString);
 
         bool flag = false;
         int i;
         for (i = 1; i < argc; i++) {
           if (hwnd != NULL) {
-            if (!strcmp(str, argv[i])) {
+            if (!memcmp(lpString, argv[i], len)) {
               flag = true;
               break;
             }
@@ -35,7 +34,7 @@ int main(int argc, char *argv[]) {
         } 
 
         if (flag) {
-          printf("已拦截指向 \"%s\" 进程的 win left 指令\n", str);
+          printf("已拦截指向进程 \"%s\" 的 win left 指令\n", lpString);
           return 1;
         }
       }
