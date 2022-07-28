@@ -7,7 +7,7 @@
 - gitee
 
   ```bash
-  $ deno install --allow-all --unstable --reload -n ki https://gitee.com/sh_winter/keyboard-event/raw/v0.1/main.ts
+  $ deno install --allow-all --unstable --reload -n ki https://gitee.com/sh_winter/key-intercept/raw/v0.1/main.ts
   ```
 
 - github
