@@ -7,13 +7,13 @@
 - gitee
 
   ```bash
-  $ deno install --allow-all --unstable --reload -n ki https://gitee.com/sh_winter/key-intercept/raw/v0.1/main.ts
+  $ deno install --allow-all --unstable -n ki https://gitee.com/sh_winter/key-intercept/raw/v0.1/main.ts
   ```
 
 - github
 
   ```bash
-  $ deno install --allow-all --unstable --reload -n ki https://raw.githubusercontent.com/sh-winter/key-intercept/v0.1/main.ts
+  $ deno install --allow-all --unstable -n ki https://raw.githubusercontent.com/sh-winter/key-intercept/v0.1/main.ts
   ```
 
 ## 使用
