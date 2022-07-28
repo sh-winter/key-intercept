@@ -1,0 +1,5 @@
+{
+  "tasks": {
+    "build": "gcc -o keyInterceptor ./keyInterceptor.c -m32 && upx ./keyInterceptor.exe"
+  }
+}

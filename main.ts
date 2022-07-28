@@ -1,7 +1,7 @@
-import { cache, exists } from 'https://deno.land/x/cache@0.2.13/mod.ts'
+import { cache } from 'https://deno.land/x/cache@0.2.13/mod.ts'
 import { dirname } from "https://deno.land/std@0.149.0/path/mod.ts";
 
-const exeFileURL = import.meta.resolve("./keyboardHook.exe");
+const exeFileURL = import.meta.resolve("./keyInterceptor.exe");
 
 export async function start(newConfig?: string[]) {
   let config: string[] = [];
@@ -14,12 +14,6 @@ export async function start(newConfig?: string[]) {
   }
 
   const { path } = await cache(exeFileURL);
-
-  // if (!(await exists(exeFileURL))) {
-  //   // 添加注册表中的程序兼容配置
-  //   const keyName = 'HKEY_CURRENT_USER\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers';
-  //   await Deno.spawn('reg.exe', { args: ['Add', keyName, '/v', path, '/d', 'WINXPSP3', '/f'] });
-  // }
 
   console.log(`当前配置拦截的应用名:\n    ${config.join('\n    ')}`);
 
